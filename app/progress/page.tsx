@@ -1,71 +1,40 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
+import FloatingBackground from "@/components/FloatingBackground";
+import ThreeDCard from "@/components/ThreeDCard";
 import { accuracyPercent, getStats, topWeakTopics } from "@/lib/storage";
 
 export default function ProgressPage() {
-  const [accuracy, setAccuracy] = useState(0);
-  const [answered, setAnswered] = useState(0);
-  const [weak, setWeak] = useState<string[]>([]);
-
-  useEffect(() => {
-    const stats = getStats();
-    setAccuracy(accuracyPercent(stats));
-    setAnswered(stats.totalAnswered);
-    setWeak(topWeakTopics(stats));
-  }, []);
-
-  const completionBars = useMemo(
-    () => [
-      { label: "Accuracy", value: accuracy },
-      { label: "Questions Completed", value: Math.min(answered, 100) },
-      { label: "Consistency", value: Math.min(20 + Math.floor(answered * 0.8), 100) }
-    ],
-    [accuracy, answered]
-  );
+  const stats = getStats();
+  const accuracy = accuracyPercent(stats);
+  const weak = topWeakTopics(stats);
 
   return (
-    <main className="min-h-screen bg-bg pb-10">
-      <Navbar />
-      <div className="mx-auto max-w-4xl space-y-6 px-4 pt-6 sm:px-6">
-        <section className="rounded-2xl bg-white p-5 shadow-soft sm:p-6">
-          <h1 className="text-2xl font-bold text-slate-900">Progress</h1>
+    <main className="min-h-screen">
+      <FloatingBackground />
+      <div className="mobile-shell">
+        <Navbar />
+        <ThreeDCard>
+          <h1 className="text-2xl font-black text-white">Progress</h1>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <Metric label="Accuracy" value={`${accuracy}%`} />
-            <Metric label="Questions completed" value={`${answered}`} />
-            <Metric label="Weak topics" value={`${weak.length}`} />
+            <Metric label="Answered" value={`${stats.totalAnswered}`} />
+            <Metric label="Streak" value={`${stats.streakDays}d`} />
           </div>
-        </section>
+        </ThreeDCard>
 
-        <section className="rounded-2xl bg-white p-5 shadow-soft sm:p-6">
-          <h2 className="text-lg font-bold text-slate-900">Performance bars</h2>
-          <div className="mt-4 space-y-4">
-            {completionBars.map((item) => (
-              <div key={item.label}>
-                <div className="mb-1 flex justify-between text-sm text-slate-600">
-                  <span>{item.label}</span>
-                  <span>{item.value}%</span>
-                </div>
-                <div className="h-3 rounded-full bg-slate-200">
-                  <div className="h-3 rounded-full bg-primary" style={{ width: `${item.value}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-2xl bg-white p-5 shadow-soft sm:p-6">
-          <h2 className="text-lg font-bold text-slate-900">Weak topics</h2>
+        <ThreeDCard className="mt-3">
+          <h2 className="text-lg font-bold text-white">Weak concepts</h2>
           <div className="mt-3 flex flex-wrap gap-2">
-            {weak.length === 0 && <p className="text-sm text-slate-500">No weak topics detected yet.</p>}
+            {weak.length === 0 && <p className="text-sm text-blue-100">No weak topics detected yet.</p>}
             {weak.map((topic) => (
-              <span key={topic} className="rounded-full border border-incorrect/30 bg-incorrect/10 px-3 py-1 text-xs font-semibold text-incorrect">
+              <span key={topic} className="rounded-full border border-rose-200/25 bg-rose-500/20 px-3 py-1 text-xs text-rose-100">
                 {topic}
               </span>
             ))}
           </div>
-        </section>
+        </ThreeDCard>
       </div>
     </main>
   );
@@ -73,9 +42,9 @@ export default function ProgressPage() {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
-    </article>
+    <div className="rounded-xl border border-blue-200/25 bg-slate-950/35 p-3">
+      <p className="text-xs uppercase text-blue-200">{label}</p>
+      <p className="mt-1 text-2xl font-black text-white">{value}</p>
+    </div>
   );
 }
