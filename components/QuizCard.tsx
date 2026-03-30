@@ -2,27 +2,23 @@
 
 import { MCQ } from "@/lib/types";
 
-type QuizCardProps = {
+type Props = {
   item: MCQ;
   onAnswer: (isCorrect: boolean) => void;
 };
 
-export default function QuizCard({ item, onAnswer }: QuizCardProps) {
-  const handleAnswer = (choiceIndex: number) => {
-    onAnswer(choiceIndex === item.answerIndex);
-  };
-
+export default function QuizCard({ item, onAnswer }: Props) {
   return (
-    <section className="animate-fade-slide rounded-2xl bg-white p-5 shadow-soft sm:p-6">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Quiz Mode</p>
-      <h2 className="mb-5 text-xl font-bold leading-tight text-slate-900 sm:text-2xl">{item.question}</h2>
-      <div className="space-y-3">
-        {item.choices.map((choice, index) => (
+    <section className="glass-panel rounded-2xl p-4">
+      <p className="text-xs uppercase tracking-wide text-blue-200">Quiz Mode</p>
+      <h2 className="mt-2 text-xl font-bold text-white">{item.question}</h2>
+      <div className="mt-4 space-y-2">
+        {item.choices.map((choice, i) => (
           <button
             key={choice}
             type="button"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-700 transition hover:border-primary hover:bg-indigo-50 sm:text-base"
-            onClick={() => handleAnswer(index)}
+            onClick={() => onAnswer(i === item.answerIndex)}
+            className="w-full rounded-xl border border-blue-200/25 bg-slate-950/40 px-3 py-3 text-left text-sm text-blue-50"
           >
             {choice}
           </button>
