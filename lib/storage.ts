@@ -19,41 +19,25 @@ const defaultSetup: StudySetup = {
   mode: "quiz",
   questionCount: 10,
   focusArea: "",
-  timed: false
+  timed: false,
+  tutorMode: true
 };
 
 const defaultSettings: UserSettings = {
+  studySpaceName: "AetherStudy",
+  theme: "ocean",
   themeIntensity: "high",
   animationLevel: "high",
-  fontStyle: "clean"
+  fontStyle: "clean",
+  tutorTone: "coach"
 };
 
 const samplePack: GeneratedStudyPack = {
-  flashcards: [
-    { front: "Define osmosis.", back: "Movement of water across a semipermeable membrane from low solute concentration to high solute concentration.", topic: "Biology" }
-  ],
-  mcqs: [
-    {
-      question: "Which statement best explains opportunity cost?",
-      choices: [
-        "The total money spent on one purchase",
-        "The value of the next best option you gave up",
-        "A random expense unrelated to decisions",
-        "The reward from every possible option"
-      ],
-      answerIndex: 1,
-      explanation: "Opportunity cost captures the value of the best forgone alternative.",
-      topic: "Economics",
-      difficulty: "medium"
-    }
-  ],
-  summaries: [
-    {
-      concept: "Judicial Review",
-      text: "Courts can invalidate laws or actions that conflict with the Constitution.",
-      topic: "Government"
-    }
-  ]
+  flashcards: [],
+  mcqs: [],
+  summaries: [],
+  tutorGuide: [],
+  topics: []
 };
 
 export function getUploads(): UploadItem[] {
@@ -154,4 +138,5 @@ function write<T>(key: string, value: T): void {
     return;
   }
   window.localStorage.setItem(key, JSON.stringify(value));
+  window.dispatchEvent(new Event("aether:settings-changed"));
 }

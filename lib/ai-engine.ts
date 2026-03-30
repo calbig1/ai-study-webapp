@@ -31,15 +31,16 @@ Instead, follow this process:
 export async function generateStudyPack(input: {
   uploads: UploadItem[];
   focusArea?: string;
+  tutorTone?: "coach" | "calm" | "direct";
 }): Promise<GeneratedStudyPack> {
   const raw = `${input.focusArea || ""}\n${input.uploads.map((u) => `${u.name} ${u.extractedText || ""}`).join("\n")}`;
   const filtered = filterAcademicContent(raw);
-  const ranked = rankConcepts(filtered);
+  const ranked = rankConcepts(filtered, input.focusArea);
 
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL || "gpt-5-mini";
 
-  if (apiKey) {
+  if (apiKey && filtered.length > 0) {
     try {
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
@@ -49,15 +50,31 @@ export async function generateStudyPack(input: {
         },
         body: JSON.stringify({
           model,
-          input: `${tutorPrompt}\n\nContent:\n${filtered.join("\n")}`
+          input: `${tutorPrompt}
+
+Return JSON only with this shape:
+{
+  "flashcards": [{ "front": "", "back": "", "topic": "", "confidenceHint": "" }],
+  "mcqs": [{ "question": "", "choices": ["", "", "", ""], "answerIndex": 0, "explanation": "", "topic": "", "difficulty": "easy" }],
+  "summaries": [{ "concept": "", "text": "", "topic": "" }],
+  "tutorGuide": [""],
+  "topics": [""]
+}
+
+Prioritize named people, places, events, unit titles, comparisons, causes, consequences, and significance.
+Focus Area: ${input.focusArea || "General"}
+Tutor Tone: ${input.tutorTone || "coach"}
+
+Content:
+${filtered.join("\n")}`
         })
       });
 
       if (response.ok) {
         const payload = await response.json();
-        if (payload?.output_text) {
-          const lines = filterAcademicContent(payload.output_text);
-          return buildPackFromConcepts(rankConcepts(lines));
+        const parsed = parseGeneratedPack(payload?.output_text);
+        if (parsed) {
+          return parsed;
         }
       }
     } catch {
@@ -65,5 +82,27 @@ export async function generateStudyPack(input: {
     }
   }
 
-  return buildPackFromConcepts(ranked);
+  return buildPackFromConcepts(ranked, input.focusArea, input.tutorTone);
+}
+
+function parseGeneratedPack(output: string | undefined): GeneratedStudyPack | null {
+  if (!output) {
+    return null;
+  }
+
+  const start = output.indexOf("{");
+  const end = output.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(output.slice(start, end + 1)) as GeneratedStudyPack;
+    if (!parsed || (!parsed.mcqs?.length && !parsed.flashcards?.length && !parsed.summaries?.length)) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
 }

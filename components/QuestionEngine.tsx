@@ -4,12 +4,14 @@ import { useMemo, useState } from "react";
 import type { MCQ } from "@/lib/types";
 import AIResponseBox from "@/components/AIResponseBox";
 import AnimatedButton from "@/components/AnimatedButton";
+import { updateStatsForAnswer } from "@/lib/storage";
 
 type Props = {
   items: MCQ[];
+  tutorGuide?: string[];
 };
 
-export default function QuestionEngine({ items }: Props) {
+export default function QuestionEngine({ items, tutorGuide = [] }: Props) {
   const [idx, setIdx] = useState(0);
   const [feedback, setFeedback] = useState<null | { ok: boolean; msg: string }>(null);
 
@@ -29,12 +31,14 @@ export default function QuestionEngine({ items }: Props) {
             <button
               key={choice}
               type="button"
-              onClick={() =>
+              onClick={() => {
+                const ok = i === current.answerIndex;
+                updateStatsForAnswer(ok, current.topic);
                 setFeedback({
-                  ok: i === current.answerIndex,
-                  msg: i === current.answerIndex ? current.explanation : `Not quite. ${current.explanation}`
-                })
-              }
+                  ok,
+                  msg: ok ? current.explanation : `Not quite. ${current.explanation}`
+                });
+              }}
               className="w-full rounded-xl border border-blue-200/20 bg-slate-950/30 px-3 py-2 text-left text-sm text-blue-50 transition hover:border-blue-300/45"
             >
               {choice}
@@ -45,6 +49,13 @@ export default function QuestionEngine({ items }: Props) {
 
       {feedback && (
         <AIResponseBox title={feedback.ok ? "Nice work" : "Tutor feedback"} body={feedback.msg} tone={feedback.ok ? "success" : "neutral"} />
+      )}
+
+      {tutorGuide.length > 0 && (
+        <div className="rounded-2xl border border-blue-200/20 bg-slate-950/35 p-4">
+          <p className="text-xs uppercase tracking-wide text-blue-200">Tutor hint</p>
+          <p className="mt-2 text-sm text-blue-100/90">{tutorGuide[idx % tutorGuide.length]}</p>
+        </div>
       )}
 
       <div className="flex justify-end">

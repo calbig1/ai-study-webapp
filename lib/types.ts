@@ -11,6 +11,7 @@ export type FlashcardItem = {
   front: string;
   back: string;
   topic: string;
+  confidenceHint?: string;
 };
 
 export type SummaryItem = {
@@ -23,6 +24,8 @@ export type GeneratedStudyPack = {
   flashcards: FlashcardItem[];
   mcqs: MCQ[];
   summaries: SummaryItem[];
+  tutorGuide: string[];
+  topics: string[];
 };
 
 export type UploadItem = {
@@ -32,6 +35,7 @@ export type UploadItem = {
   type: string;
   progress: number;
   extractedText?: string;
+  sourceType?: "file" | "pasted";
 };
 
 export type StudyMode = "quiz" | "flashcards" | "review";
@@ -41,6 +45,7 @@ export type StudySetup = {
   questionCount: number;
   focusArea: string;
   timed: boolean;
+  tutorMode: boolean;
 };
 
 export type StudyStats = {
@@ -51,9 +56,12 @@ export type StudyStats = {
 };
 
 export type UserSettings = {
+  studySpaceName: string;
+  theme: "ocean" | "sunset" | "forest" | "midnight";
   themeIntensity: "low" | "high";
   animationLevel: "low" | "high";
   fontStyle: "clean" | "academic" | "modern";
+  tutorTone: "coach" | "calm" | "direct";
 };
 
 export type ProcessedConcept = {
