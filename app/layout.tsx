@@ -11,8 +11,7 @@ export const metadata: Metadata = {
     title: "AetherStudy"
   },
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png"
+    icon: "/icon.svg"
   },
   manifest: "/manifest.webmanifest",
   themeColor: "#0A1F44"

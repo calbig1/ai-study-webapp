@@ -4,6 +4,7 @@ export type MCQ = {
   answerIndex: number;
   explanation: string;
   topic: string;
+  difficulty?: "easy" | "medium" | "hard";
 };
 
 export type FlashcardItem = {
@@ -30,6 +31,7 @@ export type UploadItem = {
   size: number;
   type: string;
   progress: number;
+  extractedText?: string;
 };
 
 export type StudyMode = "quiz" | "flashcards" | "review";
@@ -38,6 +40,7 @@ export type StudySetup = {
   mode: StudyMode;
   questionCount: number;
   focusArea: string;
+  timed: boolean;
 };
 
 export type StudyStats = {
@@ -45,4 +48,16 @@ export type StudyStats = {
   correctCount: number;
   streakDays: number;
   weakTopics: Record<string, number>;
+};
+
+export type UserSettings = {
+  themeIntensity: "low" | "high";
+  animationLevel: "low" | "high";
+  fontStyle: "clean" | "academic" | "modern";
+};
+
+export type ProcessedConcept = {
+  topic: string;
+  importance: number;
+  statements: string[];
 };

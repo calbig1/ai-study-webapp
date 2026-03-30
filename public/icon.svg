@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="AetherStudy icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="55%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#0A1F44" />
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)" />
+  <path d="M58 86c0-10 8-18 18-18h104c10 0 18 8 18 18v12H58V86Z" fill="#E2ECFF" opacity=".92" />
+  <path d="M58 110h140v60c0 10-8 18-18 18H76c-10 0-18-8-18-18v-60Z" fill="#0F172A" opacity=".78" />
+  <path d="M89 143h78" stroke="#60A5FA" stroke-width="14" stroke-linecap="round" />
+  <path d="M100 173h56" stroke="#E2ECFF" stroke-width="10" stroke-linecap="round" opacity=".88" />
+  <circle cx="196" cy="62" r="20" fill="#BAE6FD" opacity=".92" />
+</svg>

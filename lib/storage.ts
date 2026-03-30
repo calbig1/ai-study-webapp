@@ -1,10 +1,11 @@
-import { FlashcardItem, GeneratedStudyPack, MCQ, StudySetup, StudyStats, SummaryItem, UploadItem } from "@/lib/types";
+import { GeneratedStudyPack, StudySetup, StudyStats, UploadItem, UserSettings } from "@/lib/types";
 
 const KEYS = {
-  uploads: "study_uploads_v1",
-  pack: "study_pack_v1",
-  setup: "study_setup_v1",
-  stats: "study_stats_v1"
+  uploads: "aether_uploads_v2",
+  pack: "aether_pack_v2",
+  setup: "aether_setup_v2",
+  stats: "aether_stats_v2",
+  settings: "aether_settings_v2"
 } as const;
 
 const defaultStats: StudyStats = {
@@ -17,33 +18,41 @@ const defaultStats: StudyStats = {
 const defaultSetup: StudySetup = {
   mode: "quiz",
   questionCount: 10,
-  focusArea: ""
+  focusArea: "",
+  timed: false
 };
 
-export const samplePack: GeneratedStudyPack = {
+const defaultSettings: UserSettings = {
+  themeIntensity: "high",
+  animationLevel: "high",
+  fontStyle: "clean"
+};
+
+const samplePack: GeneratedStudyPack = {
   flashcards: [
-    { front: "Define opportunity cost.", back: "The value of the next best alternative you give up when making a choice.", topic: "Economics" },
-    { front: "What is mitosis?", back: "A cell division process that produces two genetically identical daughter cells.", topic: "Biology" }
+    { front: "Define osmosis.", back: "Movement of water across a semipermeable membrane from low solute concentration to high solute concentration.", topic: "Biology" }
   ],
   mcqs: [
     {
-      question: "Which event most directly increased tensions between Britain and the colonies before 1776?",
-      choices: ["Missouri Compromise", "Townshend Acts", "Marshall Plan", "Monroe Doctrine"],
+      question: "Which statement best explains opportunity cost?",
+      choices: [
+        "The total money spent on one purchase",
+        "The value of the next best option you gave up",
+        "A random expense unrelated to decisions",
+        "The reward from every possible option"
+      ],
       answerIndex: 1,
-      explanation: "The Townshend Acts imposed taxes and intensified colonial resistance.",
-      topic: "US History"
-    },
-    {
-      question: "In a standard supply-demand model, what usually happens when demand increases and supply stays constant?",
-      choices: ["Price decreases", "Price increases", "Quantity decreases", "No change"],
-      answerIndex: 1,
-      explanation: "Higher demand shifts the demand curve right, typically raising equilibrium price.",
-      topic: "Economics"
+      explanation: "Opportunity cost captures the value of the best forgone alternative.",
+      topic: "Economics",
+      difficulty: "medium"
     }
   ],
   summaries: [
-    { concept: "Photosynthesis", text: "Plants convert light energy, water, and carbon dioxide into glucose and oxygen. It powers most food chains.", topic: "Biology" },
-    { concept: "Judicial Review", text: "Courts can evaluate whether laws or executive actions violate the Constitution.", topic: "Government" }
+    {
+      concept: "Judicial Review",
+      text: "Courts can invalidate laws or actions that conflict with the Constitution.",
+      topic: "Government"
+    }
   ]
 };
 
@@ -79,6 +88,14 @@ export function setStats(data: StudyStats): void {
   write(KEYS.stats, data);
 }
 
+export function getSettings(): UserSettings {
+  return read<UserSettings>(KEYS.settings, defaultSettings);
+}
+
+export function setSettings(data: UserSettings): void {
+  write(KEYS.settings, data);
+}
+
 export function updateStatsForAnswer(isCorrect: boolean, topic: string): void {
   const stats = getStats();
   stats.totalAnswered += 1;
@@ -88,6 +105,35 @@ export function updateStatsForAnswer(isCorrect: boolean, topic: string): void {
     stats.weakTopics[topic] = (stats.weakTopics[topic] ?? 0) + 1;
   }
   setStats(stats);
+}
+
+export function accuracyPercent(stats: StudyStats): number {
+  if (stats.totalAnswered === 0) {
+    return 0;
+  }
+  return Math.round((stats.correctCount / stats.totalAnswered) * 100);
+}
+
+export function topWeakTopics(stats: StudyStats): string[] {
+  return Object.entries(stats.weakTopics)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([topic]) => topic);
+}
+
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) {
+    return "0 B";
+  }
+  const units = ["B", "KB", "MB", "GB"];
+  const level = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  const value = bytes / 1024 ** level;
+  return `${value.toFixed(level === 0 ? 0 : 1)} ${units[level]}`;
+}
+
+export function estimateUploadProgress(current: number): number {
+  const next = current + Math.floor(Math.random() * 21) + 14;
+  return Math.min(100, next);
 }
 
 function read<T>(key: string, fallback: T): T {
@@ -108,33 +154,4 @@ function write<T>(key: string, value: T): void {
     return;
   }
   window.localStorage.setItem(key, JSON.stringify(value));
-}
-
-export function estimateUploadProgress(current: number): number {
-  const next = current + Math.floor(Math.random() * 24) + 18;
-  return Math.min(next, 100);
-}
-
-export function formatFileSize(bytes: number): string {
-  if (bytes === 0) {
-    return "0 B";
-  }
-  const units = ["B", "KB", "MB", "GB"];
-  const level = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
-  const value = bytes / 1024 ** level;
-  return `${value.toFixed(level === 0 ? 0 : 1)} ${units[level]}`;
-}
-
-export function topWeakTopics(stats: StudyStats): string[] {
-  return Object.entries(stats.weakTopics)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4)
-    .map(([topic]) => topic);
-}
-
-export function accuracyPercent(stats: StudyStats): number {
-  if (stats.totalAnswered === 0) {
-    return 0;
-  }
-  return Math.round((stats.correctCount / stats.totalAnswered) * 100);
 }
