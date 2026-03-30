@@ -41,7 +41,8 @@ const samplePack: GeneratedStudyPack = {
 };
 
 export function getUploads(): UploadItem[] {
-  return read<UploadItem[]>(KEYS.uploads, []);
+  const uploads = read<UploadItem[]>(KEYS.uploads, []);
+  return Array.isArray(uploads) ? (uploads.map(normalizeUpload).filter(Boolean) as UploadItem[]) : [];
 }
 
 export function setUploads(data: UploadItem[]): void {
@@ -49,7 +50,7 @@ export function setUploads(data: UploadItem[]): void {
 }
 
 export function getPack(): GeneratedStudyPack {
-  return read<GeneratedStudyPack>(KEYS.pack, samplePack);
+  return normalizePack(read<GeneratedStudyPack>(KEYS.pack, samplePack));
 }
 
 export function setPack(data: GeneratedStudyPack): void {
@@ -57,7 +58,7 @@ export function setPack(data: GeneratedStudyPack): void {
 }
 
 export function getSetup(): StudySetup {
-  return read<StudySetup>(KEYS.setup, defaultSetup);
+  return normalizeSetup(read<StudySetup>(KEYS.setup, defaultSetup));
 }
 
 export function setSetup(data: StudySetup): void {
@@ -65,7 +66,7 @@ export function setSetup(data: StudySetup): void {
 }
 
 export function getStats(): StudyStats {
-  return read<StudyStats>(KEYS.stats, defaultStats);
+  return normalizeStats(read<StudyStats>(KEYS.stats, defaultStats));
 }
 
 export function setStats(data: StudyStats): void {
@@ -73,7 +74,7 @@ export function setStats(data: StudyStats): void {
 }
 
 export function getSettings(): UserSettings {
-  return read<UserSettings>(KEYS.settings, defaultSettings);
+  return normalizeSettings(read<UserSettings>(KEYS.settings, defaultSettings));
 }
 
 export function setSettings(data: UserSettings): void {
@@ -139,4 +140,60 @@ function write<T>(key: string, value: T): void {
   }
   window.localStorage.setItem(key, JSON.stringify(value));
   window.dispatchEvent(new Event("aether:settings-changed"));
+}
+
+function normalizePack(value: Partial<GeneratedStudyPack> | null | undefined): GeneratedStudyPack {
+  return {
+    flashcards: Array.isArray(value?.flashcards) ? value!.flashcards : [],
+    mcqs: Array.isArray(value?.mcqs) ? value!.mcqs : [],
+    summaries: Array.isArray(value?.summaries) ? value!.summaries : [],
+    tutorGuide: Array.isArray(value?.tutorGuide) ? value!.tutorGuide : [],
+    topics: Array.isArray(value?.topics) ? value!.topics : []
+  };
+}
+
+function normalizeSetup(value: Partial<StudySetup> | null | undefined): StudySetup {
+  return {
+    mode: value?.mode ?? defaultSetup.mode,
+    questionCount: value?.questionCount ?? defaultSetup.questionCount,
+    focusArea: value?.focusArea ?? defaultSetup.focusArea,
+    timed: value?.timed ?? defaultSetup.timed,
+    tutorMode: value?.tutorMode ?? defaultSetup.tutorMode
+  };
+}
+
+function normalizeStats(value: Partial<StudyStats> | null | undefined): StudyStats {
+  return {
+    totalAnswered: value?.totalAnswered ?? defaultStats.totalAnswered,
+    correctCount: value?.correctCount ?? defaultStats.correctCount,
+    streakDays: value?.streakDays ?? defaultStats.streakDays,
+    weakTopics: value?.weakTopics && typeof value.weakTopics === "object" ? value.weakTopics : {}
+  };
+}
+
+function normalizeSettings(value: Partial<UserSettings> | null | undefined): UserSettings {
+  return {
+    studySpaceName: value?.studySpaceName ?? defaultSettings.studySpaceName,
+    theme: value?.theme ?? defaultSettings.theme,
+    themeIntensity: value?.themeIntensity ?? defaultSettings.themeIntensity,
+    animationLevel: value?.animationLevel ?? defaultSettings.animationLevel,
+    fontStyle: value?.fontStyle ?? defaultSettings.fontStyle,
+    tutorTone: value?.tutorTone ?? defaultSettings.tutorTone
+  };
+}
+
+function normalizeUpload(value: Partial<UploadItem> | null | undefined): UploadItem | null {
+  if (!value?.id || !value?.name) {
+    return null;
+  }
+
+  return {
+    id: value.id,
+    name: value.name,
+    size: value.size ?? 0,
+    type: value.type ?? "unknown",
+    progress: value.progress ?? 100,
+    extractedText: value.extractedText,
+    sourceType: value.sourceType
+  };
 }
