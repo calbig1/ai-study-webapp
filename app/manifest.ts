@@ -1,0 +1,21 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "AetherStudy",
+    short_name: "AetherStudy",
+    description: "AI-first premium study platform",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#0A1F44",
+    theme_color: "#0A1F44",
+    orientation: "portrait",
+    icons: [
+      {
+        src: "/icon.png",
+        sizes: "512x512",
+        type: "image/png"
+      }
+    ]
+  };
+}
