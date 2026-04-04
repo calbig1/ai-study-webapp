@@ -1,30 +1,51 @@
-# AetherStudy
+# StudyFlow AI
 
-Premium AI study platform with mobile-first UX, advanced content filtering, and 3D blue interface.
+A production-ready, multi-page AI-powered study app for students (15–23), designed with a minimal soft-blue UI and mobile-first layout.
 
-## Core Routes
-- `/` animated landing
-- `/onboarding` personalization
-- `/dashboard`
-- `/upload`
-- `/study/setup`
-- `/study-session`
-- `/quiz-mode`
-- `/flashcards`
-- `/progress`
-- `/library`
-- `/settings`
+## Features
 
-## AI Pipeline
-- `lib/content-processor.ts` strips filler + ranks concepts
-- `lib/ai-engine.ts` applies tutor logic and generates exam-style study pack
-- `lib/image-parser.ts` image text cleanup and noise filtering hooks
+- **Home Dashboard** (`/dashboard`)
+  - Greeting + quick actions
+  - Daily streak and accuracy snapshot
+  - Recent activity and AI-generated study plan
+- **Scan Solver** (`/scan-solver`)
+  - Image upload + typed input
+  - Subject detection + step-by-step solutions
+  - "Explain like I'm 10" and harder-version prompts
+- **AI Chat Tutor** (`/ai-chat`)
+  - Contextual tutoring chat
+  - Modes: Homework Help / Test Prep / Concept Explanation
+- **Smart Notes** (`/notes`)
+  - Paste/upload notes
+  - AI summary, key points, flashcards, and quiz prompts
+- **Practice Mode** (`/practice`)
+  - Adaptive easy/medium/hard prompts
+  - Instant feedback + explain-mistake actions
+- **Flashcards** (`/flashcards`)
+  - Swipe-style review and spaced repetition signals
+- **Progress Tracker** (`/progress`)
+  - Accuracy, streaks, answered count, weak-area tracking
+- **Settings/Profile** (`/settings`)
+  - Personalization, subject/grade inputs, dark mode and notifications toggles
 
-## Run
+## Tech Stack
+
+- **Frontend**: Next.js (App Router), React, Tailwind CSS
+- **Backend/API**: Next.js route handlers (`/app/api/*`)
+- **AI Layer**: OpenAI-ready generation path with local fallback logic
+- **Storage**: local browser persistence abstraction in `lib/storage.ts`
+- **Deployment**: Vercel-ready (`vercel.json`)
+
+## Setup
+
 ```bash
 npm install
 npm run dev
 ```
 
-## Vercel
-This project is configured for Vercel and auto-deploy from `main`.
+Open `http://localhost:3000`.
+
+## Environment
+
+Copy `.env.example` to `.env.local` and add optional API keys for full AI responses.
+
