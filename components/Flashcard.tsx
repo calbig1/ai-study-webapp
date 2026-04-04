@@ -16,27 +16,19 @@ export default function Flashcard({ item, flipped, onFlip, onRate }: FlashcardPr
   useSwipe(ref, { onLeft: () => onRate("hard"), onRight: () => onRate("easy") });
 
   return (
-    <section className="space-y-4 rounded-2xl glass-panel p-4" ref={ref}>
-      <p className="text-xs uppercase tracking-wide text-blue-200">Flashcards</p>
+    <section className="space-y-4 rounded-2xl border border-blue-200 bg-white p-4" ref={ref}>
+      <p className="text-xs uppercase tracking-wide text-blue-600">Flashcards</p>
 
-      <button type="button" onClick={onFlip} className="w-full [perspective:1000px]">
-        <div className={`flip-3d relative h-56 w-full ${flipped ? "flipped" : ""}`}>
-          <div className="flip-face absolute inset-0 rounded-2xl border border-blue-200/30 bg-slate-950/40 p-5 text-left">
-            <p className="text-xs uppercase text-blue-200">Front</p>
-            <p className="mt-3 text-xl font-bold text-white">{item.front}</p>
-          </div>
-          <div className="flip-face flip-back absolute inset-0 rounded-2xl border border-blue-200/30 bg-blue-900/35 p-5 text-left">
-            <p className="text-xs uppercase text-blue-200">Back</p>
-            <p className="mt-3 text-lg text-blue-50">{item.back}</p>
-          </div>
-        </div>
+      <button type="button" onClick={onFlip} className="w-full rounded-2xl bg-slate-50 p-5 text-left">
+        <p className="text-xs uppercase text-slate-500">{flipped ? "Back" : "Front"}</p>
+        <p className="mt-3 text-lg font-bold text-slate-900">{flipped ? item.back : item.front}</p>
       </button>
 
       <div className="grid grid-cols-2 gap-3">
-        <button type="button" onClick={() => onRate("easy")} className="rounded-xl bg-emerald-500/25 px-4 py-3 text-sm font-semibold text-emerald-200">
+        <button type="button" onClick={() => onRate("easy")} className="rounded-xl bg-emerald-100 px-4 py-3 text-sm font-semibold text-emerald-700">
           Easy
         </button>
-        <button type="button" onClick={() => onRate("hard")} className="rounded-xl bg-rose-500/25 px-4 py-3 text-sm font-semibold text-rose-200">
+        <button type="button" onClick={() => onRate("hard")} className="rounded-xl bg-rose-100 px-4 py-3 text-sm font-semibold text-rose-700">
           Hard
         </button>
       </div>

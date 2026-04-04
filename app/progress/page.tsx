@@ -16,45 +16,20 @@ export default function ProgressPage() {
       <FloatingBackground />
       <div className="mobile-shell">
         <Navbar />
-        <div className="grid gap-3 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="grid gap-3 lg:grid-cols-2">
           <ThreeDCard>
-            <h1 className="text-2xl font-black text-white">Progress</h1>
+            <h1 className="text-2xl font-extrabold text-slate-900">Progress Tracker</h1>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <Metric label="Accuracy" value={`${accuracy}%`} />
               <Metric label="Answered" value={`${stats.totalAnswered}`} />
               <Metric label="Streak" value={`${stats.streakDays}d`} />
             </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-blue-200/25 bg-slate-950/35 p-4">
-                <p className="text-xs uppercase text-blue-200">Generated topics</p>
-                <p className="mt-2 text-2xl font-black text-white">{pack.topics.length}</p>
-              </div>
-              <div className="rounded-xl border border-blue-200/25 bg-slate-950/35 p-4">
-                <p className="text-xs uppercase text-blue-200">Tutor prompts</p>
-                <p className="mt-2 text-2xl font-black text-white">{pack.tutorGuide.length}</p>
-              </div>
-            </div>
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Topics mastered: {Math.max(0, pack.topics.length - weak.length)}</div>
           </ThreeDCard>
-
           <ThreeDCard>
-            <h2 className="text-lg font-bold text-white">Weak concepts</h2>
+            <h2 className="text-lg font-bold text-slate-900">Weak areas</h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {weak.length === 0 && <p className="text-sm text-blue-100">No weak topics detected yet.</p>}
-              {weak.map((topic) => (
-                <span key={topic} className="rounded-full border border-rose-200/25 bg-rose-500/20 px-3 py-1 text-xs text-rose-100">
-                  {topic}
-                </span>
-              ))}
-            </div>
-            <div className="mt-4 rounded-2xl border border-blue-200/20 bg-slate-950/35 p-4">
-              <p className="text-sm font-semibold text-white">Topics in current pack</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {pack.topics.slice(0, 8).map((topic) => (
-                  <span key={topic} className="app-chip rounded-full px-3 py-1 text-xs">
-                    {topic}
-                  </span>
-                ))}
-              </div>
+              {weak.length ? weak.map((topic) => <span key={topic} className="rounded-full bg-rose-100 px-3 py-1 text-xs text-rose-700">{topic}</span>) : <p className="text-sm text-slate-600">No weak topics detected yet.</p>}
             </div>
           </ThreeDCard>
         </div>
@@ -65,9 +40,9 @@ export default function ProgressPage() {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-blue-200/25 bg-slate-950/35 p-3">
-      <p className="text-xs uppercase text-blue-200">{label}</p>
-      <p className="mt-1 text-2xl font-black text-white">{value}</p>
+    <div className="rounded-xl bg-blue-50 p-3">
+      <p className="text-xs uppercase text-blue-600">{label}</p>
+      <p className="mt-1 text-2xl font-extrabold text-slate-900">{value}</p>
     </div>
   );
 }

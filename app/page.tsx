@@ -3,7 +3,6 @@
 import Link from "next/link";
 import FloatingBackground from "@/components/FloatingBackground";
 import ThreeDCard from "@/components/ThreeDCard";
-import AnimatedButton from "@/components/AnimatedButton";
 
 export default function LandingPage() {
   return (
@@ -11,19 +10,17 @@ export default function LandingPage() {
       <FloatingBackground />
       <div className="mobile-shell flex min-h-screen items-center">
         <ThreeDCard className="w-full">
-          <p className="text-xs uppercase tracking-[0.2em] text-blue-200">Premium Study Platform</p>
-          <h1 className="mt-3 text-4xl font-black leading-tight text-white sm:text-5xl">
-            Upload notes. Study smarter. Ace your test.
-          </h1>
-          <p className="mt-3 max-w-xl text-sm text-blue-100/85 sm:text-base">
-            AetherStudy filters raw material, prioritizes what matters, and delivers one focused question at a time.
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">AI Study App</p>
+          <h1 className="mt-3 text-4xl font-extrabold leading-tight text-slate-900 sm:text-5xl">Solve faster. Understand deeper. Study smarter.</h1>
+          <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
+            Built for students 15–23: camera solver, smart notes, adaptive practice, AI tutor chat, flashcards, and progress tracking in one clean experience.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/onboarding">
-              <AnimatedButton>Get Started</AnimatedButton>
+            <Link href="/dashboard" className="touch-btn rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-white">
+              Open dashboard
             </Link>
-            <Link href="/upload" className="rounded-xl border border-blue-200/30 px-4 py-3 text-sm font-semibold text-blue-100">
-              Upload Material
+            <Link href="/scan-solver" className="touch-btn rounded-xl border border-blue-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">
+              Scan a problem
             </Link>
           </div>
         </ThreeDCard>
